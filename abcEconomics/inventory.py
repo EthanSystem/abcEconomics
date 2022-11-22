@@ -7,6 +7,7 @@ epsilon = get_epsilon()
 
 
 def isclose(a, b):
+    """判断两个数是否足够接近，以至于可以视为相同大小"""
     rel_tol = 1e-9
     return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), 0.0)
 
@@ -20,7 +21,8 @@ class Inventory(object):
         self._perishable = []
 
     def create(self, good, quantity):
-        """ creates quantity of the good out of nothing
+        """ 凭空地创建指定数量的商品和劳动等资源。
+        creates quantity of the good out of nothing
 
         Use with care. As long as you use it only for labor and
         natural resources your model is macro-economically complete.
@@ -33,7 +35,7 @@ class Inventory(object):
         self.haves[good] += quantity
 
     def create_timestructured(self, good, quantity):
-        """ creates quantity of the time structured good out of nothing.
+        """ 凭空地创建指定数量的时间。creates quantity of the time structured good out of nothing.
         For example::
 
             self.creat_timestructured('capital', [10,20,30])
@@ -62,7 +64,7 @@ class Inventory(object):
             self.haves[good].time_structure[i] += qty
 
     def destroy(self, good, quantity=None):
-        """ destroys quantity of the good. If quantity is omitted destroys all
+        """ 凭空地销毁指定数量的商品。destroys quantity of the good. If quantity is omitted destroys all
 
         Use with care.
 
@@ -87,6 +89,7 @@ class Inventory(object):
             self.haves[good] -= quantity
 
     def reserve(self, good, quantity):
+        """准备金"""
         self._reserved[good] += quantity
         if self._reserved[good] > self.haves[good]:
             if isclose(self._reserved[good], self.haves[good]):
@@ -96,23 +99,27 @@ class Inventory(object):
                 raise NotEnoughGoods(self.name, good, quantity - (self.haves[good] - self._reserved[good]))
 
     def rewind(self, good, quantity):
+        """反转"""
         self._reserved[good] -= quantity
 
     def commit(self, good, committed_quantity, final_quantity):
+        """委托"""
         self._reserved[good] -= committed_quantity
         self.haves[good] -= final_quantity
 
     def transform(self, ingredient, unit, product, quantity=None):
+        """交易"""
         if quantity is None:
             quantity = self.haves[ingredient]
         self.destroy(ingredient, quantity)
         self.create(product, float(unit) * quantity)
 
     def possession(self, good):
+        """持有财产"""
         return self.not_reserved(good)
 
     def not_reserved(self, good):
-        """ returns how much of good an agent possesses.
+        """ 非准备金资产 returns how much of good an agent possesses.
 
         Returns:
             A number.

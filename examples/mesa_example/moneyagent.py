@@ -7,7 +7,7 @@ class MoneyAgent(abce.Agent):
 
     def init(self, grid):
         self.grid = grid
-        """ the grid on which agents live must be imported """
+        """ the grid on which agents live must be imported 初始化随机放置agents在地图"""
         x = random.randrange(self.grid.width)
         y = random.randrange(self.grid.height)
         self.pos = (x, y)
@@ -15,7 +15,7 @@ class MoneyAgent(abce.Agent):
         self.create('money', random.randrange(2, 10))
 
     def move(self):
-        """ moves randomly """
+        """ moves randomly 随机移动到邻近之位置1格"""
         possible_steps = self.grid.get_neighborhood(self.pos,
                                                     moore=True,
                                                     include_center=False)
@@ -23,7 +23,7 @@ class MoneyAgent(abce.Agent):
         self.grid.move_agent(self, new_position)
 
     def give_money(self):
-        """ If the agent has wealth he gives it to cellmates """
+        """ If the agent has wealth he gives it to cellmates 如果agent分配1单位财富给家庭成员 """
         cellmates = self.grid.get_cell_list_contents([self.pos])
         if len(cellmates) > 1:
             other = random.choice(cellmates)
