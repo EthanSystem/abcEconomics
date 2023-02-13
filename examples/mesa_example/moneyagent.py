@@ -23,7 +23,7 @@ class MoneyAgent(abce.Agent):
         self.grid.move_agent(self, new_position)
 
     def give_money(self):
-        """ If the agent has wealth he gives it to cellmates 如果agent有财富，则分配财富1单位给家庭成员 """
+        """ If the agent has wealth he gives it to cellmates 如果agent分配1单位财富给家庭成员 """
         cellmates = self.grid.get_cell_list_contents([self.pos])
         if len(cellmates) > 1:
             other = random.choice(cellmates)
